@@ -1,5 +1,8 @@
-# dagShiny Application
-dataThink: Work for Jay Park's team creating a shiny app to visualize and edit DAGs. 
+# DAGagramR
+
+![DAGagramR Logo](DAGgram-Logo.png){width=10%}
+
+Shiny app to visualize and edit DAGs jointly developed by CCS and DataThink. 
 
 ## Purpose
 This application enables users to visualize and analyze causal relationships between variables using Directed Acyclic Graphs (DAGs). It specifically focuses on illustrating the effects of various factors on a treatment variable (x) and an outcome variable (y), aiding in understanding causal pathways and potential confounders.
