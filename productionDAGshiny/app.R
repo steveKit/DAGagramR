@@ -22,7 +22,7 @@ source("displayNodes/server.R")
 source("openBackDoorPathsDAG/ui.R")
 source("openBackDoorPathsDAG/server.R")
 source("nameModal/server.R")
-source("RCode/Server.R")
+source("RCode/server.R")
 
 # Turn on for production
 options(warn = -1)
