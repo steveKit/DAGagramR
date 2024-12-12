@@ -6,11 +6,18 @@ openDAGServer <- function(input, output, session, toDataStorage, treatment,
   reactiveGraph <- reactiveVal(NULL)
   causalPathList <- reactiveVal(NULL)
   showWarning <- reactiveVal(FALSE)
-   
+  
   firstGraphSimple <- reactive(BuildBaseGraph(toDataStorage$data, treatment(),
                                         response(), isTransportability()))
     
   observe({
+    tempData <- toDataStorage$data
+    effectModifiers <- FindEffectModifiers(tempData, response())
+    temp <- toDataStorage$data %>%
+      mutate(effectModifier = if_else(name %in% effectModifiers, TRUE, FALSE))
+    
+    toDataStorage$data <- temp
+    
     firstGraph <- BuildBaseGraph(toDataStorage$data, treatment(),
                                      response(), isTransportability())
     
@@ -58,7 +65,12 @@ openDAGServer <- function(input, output, session, toDataStorage, treatment,
     } else {
       showWarning(FALSE)
     }
+# ------------------------------------------------------------------------------
+
+    # effectModifiers <- FindEffectModifiers(toDataStorage$data, response())
     
+    
+# ------------------------------------------------------------------------------
     
     
     # Store the graph and causal path in the reactive values

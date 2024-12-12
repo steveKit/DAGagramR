@@ -19,6 +19,8 @@ unmeasuredNodeFillColor <- "lightgrey"
 unmeasuredNodeOutlineColor <- "#767372"
 unmeasuredNodeFontColor <- "#767372"
 
+effectModifierOutlineColor <- "red"
+
 
 # Sets up '*' for mandatory fields
 LabelMandatory <- function( label ) {
@@ -119,7 +121,7 @@ DataToDag <- function( toData ) {
       to = name,
       name = temp
     ) %>%
-    filter(!is.null(to)) %>%
+    filter(!is.na(to)) %>%
     as_tidy_dagitty
   
   # Create the DAG
@@ -226,6 +228,43 @@ PathStringToDF <- function( path ) {
   return(edgeDF)
 }
 
+
+FindEffectModifiers <- function( toData, response ) {
+  if (c("Participation") %in% toData$name) {
+    # Creates a DAG off of toData
+    temp <- toData %>% select(name, to) 
+
+    connectedNodes <- temp %>% filter(!is.na(to)) %>%
+      mutate(
+        temp = to,
+        to = name,
+        name = temp
+      ) %>%
+      select(name, to)
+    
+    
+    dagObject <- as_tidy_dagitty(connectedNodes)
+    
+    # Pull the dag and find ancestors of response and "participation"
+    dag <- pull_dag(dagObject)
+    dagittyObject <- as.dagitty(dag)
+    
+    responseAncestors <- ancestors(dagittyObject, response)
+    responseAncestors <- responseAncestors[!(responseAncestors %in% c(response))]
+
+    if (c("Participation") %in% toData$to) {
+      participAncestors <- ancestors(dagittyObject, "Participation")
+      participAncestors <- participAncestors[!(participAncestors %in% c("Participation"))]
+      
+      effectModifiers <- intersect(participAncestors, responseAncestors)
+      return(effectModifiers)
+    }
+    
+    return(c())
+  }
+}
+
+
 # --------------------------------- -
 # GRAPHING FUNCTIONS
 # --------------------------------- -
@@ -244,6 +283,10 @@ BuildBaseGraph <- function( toData, treatment, response, transportability = FALS
   unmeasuredNodes <- toData %>%
     filter(unmeasured)
   unmeasuredNodes <- unique(as.list(unmeasuredNodes$name))
+  
+  effectModifiers <- toData %>%
+    filter(effectModifier)
+  effectModifiers <- unique(as.list(effectModifiers$name))
   
   coloredNodes <- c(conditionedNodes, unmeasuredNodes, baseList)
   
@@ -294,6 +337,7 @@ BuildBaseGraph <- function( toData, treatment, response, transportability = FALS
       clear_selection()
   }
   
+  
   # If there are more than the conditioned and base nodes make the color white
   if (length(unique(toData$name)) != length(coloredNodes)) {
     firstGraph <- firstGraph %>%
@@ -302,6 +346,15 @@ BuildBaseGraph <- function( toData, treatment, response, transportability = FALS
       set_node_attrs_ws(node_attr = fillcolor, value = setFillColor) %>%
       set_node_attrs_ws(node_attr = color, value = setOutlineColor) %>%
       set_node_attrs_ws(node_attr = fontcolor, value = setFontColor) %>%
+      clear_selection()
+  }
+  
+  # Color the effect modifiers
+  if(length(effectModifiers > 0)) {
+    firstGraph <- firstGraph %>%
+      mutate_node_attrs(effectModifier = if_else(label %in% effectModifiers, TRUE, FALSE)) %>%
+      select_nodes(conditions = effectModifier) %>%
+      set_node_attrs_ws(node_attr = color, value = effectModifierOutlineColor) %>%
       clear_selection()
   }
   
@@ -384,6 +437,5 @@ convertImgToDataUrl <- function(path) {
   # Convert png to data encoded URL
   text_encoded_img <- base64enc::base64encode(path)
   data_url <- paste0("data:image/png;base64,", text_encoded_img)
-  
   data_url
 }

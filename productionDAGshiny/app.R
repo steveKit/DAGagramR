@@ -163,7 +163,8 @@ server <- function(input, output, session) {
             to = I(c(NA, response(), NA)),
             unmeasured = FALSE,
             conditioned = FALSE,
-            base = TRUE
+            base = TRUE,
+            effectModifier = FALSE
           )
         )
       } else {
@@ -173,7 +174,8 @@ server <- function(input, output, session) {
             to = I(c(NA, response())),
             unmeasured = FALSE,
             conditioned = FALSE,
-            base = TRUE
+            base = TRUE,
+            effectModifier = FALSE
           )
         )
       }
