@@ -1,6 +1,7 @@
 openDAGServer <- function(input, output, session, toDataStorage, treatment,
                           response, highlightedPathList, isTransportability,
-                          dagDownloads, backdoorShow, layout){
+                          dagDownloads, backdoorShow, effectModifierShow,
+                          layout){
   ns <- session$ns
   # Create reactive values to store the graph and open path information
   reactiveGraph <- reactiveVal(NULL)
@@ -66,10 +67,13 @@ openDAGServer <- function(input, output, session, toDataStorage, treatment,
       showWarning(FALSE)
     }
 # ------------------------------------------------------------------------------
-
-    # effectModifiers <- FindEffectModifiers(toDataStorage$data, response())
-    
-    
+# 
+#     if (effectModifierShow()) {
+#       graphWithEffectMods <- addEffectModifiersToGraph(firstGraph, effectModifiers)
+#       print("The effect Modifiers will be added")
+#     } else {
+#       print("TheEffectModifiersAreRemoved")
+#     }
 # ------------------------------------------------------------------------------
     
     
@@ -88,6 +92,10 @@ openDAGServer <- function(input, output, session, toDataStorage, treatment,
   
   
   observe({
+    effectModifiers <- toDataStorage$data %>%
+      filter(effectModifier)
+    effectModifiers <- unique(as.list(effectModifiers$name))
+    
     if (backdoorShow()){
       if(showWarning()){
         output$unmeasuredWarning <- renderUI({
@@ -96,22 +104,51 @@ openDAGServer <- function(input, output, session, toDataStorage, treatment,
         })
       } else {
         output$unmeasuredWarning <- renderUI({})
-    }
-      output$coloredDag <- renderGrViz({
-        req(reactiveGraph())  # Ensure the graph is available
-        render_graph(
-          reactiveGraph() %>%
-            add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
-          layout = layout()
-        )
-      })
+      }
+      
+      if (effectModifierShow()){
+        effectModifierGraph <- addEffectModifiersToGraph(reactiveGraph(),
+                                                         effectModifiers)
+        
+        output$coloredDag <- renderGrViz({
+          render_graph(
+            effectModifierGraph %>%
+              add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
+            layout = layout()
+          )
+        })
+      } else {
+        output$coloredDag <- renderGrViz({
+          req(reactiveGraph())  # Ensure the graph is available
+          render_graph(
+            reactiveGraph() %>%
+              add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
+            layout = layout()
+          )
+        })
+      }
+      
     } else {
-      output$coloredDag <- renderGrViz({
-        render_graph(
-          firstGraphSimple() %>%
-            add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
-          layout = layout())
-      })
+      if (effectModifierShow()){
+        print("Adding effect modifiers and displaying graph")
+        effectModifierGraph <- addEffectModifiersToGraph(firstGraphSimple(),
+                                                         effectModifiers)
+        
+        output$coloredDag <- renderGrViz({
+          render_graph(
+            effectModifierGraph %>%
+              add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
+            layout = layout()
+          )
+        })
+      } else {
+        output$coloredDag <- renderGrViz({
+          render_graph(
+            firstGraphSimple() %>%
+              add_global_graph_attrs("rankdir", "LR", attr_type = "graph"),
+            layout = layout())
+        })
+      }
     }
   })
   

@@ -284,10 +284,6 @@ BuildBaseGraph <- function( toData, treatment, response, transportability = FALS
     filter(unmeasured)
   unmeasuredNodes <- unique(as.list(unmeasuredNodes$name))
   
-  effectModifiers <- toData %>%
-    filter(effectModifier)
-  effectModifiers <- unique(as.list(effectModifiers$name))
-  
   coloredNodes <- c(conditionedNodes, unmeasuredNodes, baseList)
   
   # Create the base graph
@@ -349,17 +345,31 @@ BuildBaseGraph <- function( toData, treatment, response, transportability = FALS
       clear_selection()
   }
   
+  # # Color the effect modifiers
+  # if(length(effectModifiers > 0)) {
+  #   firstGraph <- firstGraph %>%
+  #     mutate_node_attrs(effectModifier = if_else(label %in% effectModifiers, TRUE, FALSE)) %>%
+  #     select_nodes(conditions = effectModifier) %>%
+  #     set_node_attrs_ws(node_attr = color, value = effectModifierOutlineColor) %>%
+  #     clear_selection()
+  # }
+  
+  return(firstGraph)
+}
+
+
+addEffectModifiersToGraph <- function( graph, effectModifiers ){
   # Color the effect modifiers
   if(length(effectModifiers > 0)) {
-    firstGraph <- firstGraph %>%
+    graph <- graph %>%
       mutate_node_attrs(effectModifier = if_else(label %in% effectModifiers, TRUE, FALSE)) %>%
       select_nodes(conditions = effectModifier) %>%
       set_node_attrs_ws(node_attr = color, value = effectModifierOutlineColor) %>%
       clear_selection()
   }
-  
-  return(firstGraph)
+  return(graph)
 }
+
 
 # creates the legend 
 DAGLegend <- function() {

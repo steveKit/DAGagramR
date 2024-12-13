@@ -106,7 +106,9 @@ ui <- page_navbar(
               label = "Show Open Backdoor Paths",
               status = "primary",
               right = FALSE
-            ))
+            ),
+            uiOutput("effectModifierSwitch")
+            )
           ),
           uiOutput("legend"),
           uiOutput("graph")
@@ -167,6 +169,17 @@ server <- function(input, output, session) {
             effectModifier = FALSE
           )
         )
+        
+        # Add the effect modifier switch
+        output$effectModifierSwitch <- renderUI(
+          materialSwitch(
+            inputId = "showEffectModifiers",
+            label = "Show Effect Modifiers",
+            status = "primary",
+            right = FALSE
+          )
+        )
+        
       } else {
         toDataStorage <- reactiveValues(
           data = data.frame(
@@ -187,6 +200,7 @@ server <- function(input, output, session) {
         RCode = "This is your R code" # Replace this with your actual R code to be copied
       )
       
+      effectModifierShow <- reactiveVal(FALSE)
       openDAGUI("openDAG")
       backdoorShow <- reactiveVal(FALSE)
       layout <- reactiveVal("kk")
@@ -194,7 +208,10 @@ server <- function(input, output, session) {
       observe({
         openDAGUI("openDAG")
         backdoorShow(input$showBackdoor)
-        
+        if (!is.null(input$showEffectModifiers)){
+          effectModifierShow(input$showEffectModifiers)
+        }
+
         output$graph <- renderUI({
           openDAGUI("openDAG")
         })
@@ -214,7 +231,7 @@ server <- function(input, output, session) {
                  toDataStorage, treatment, response, highlightedPathList)
       callModule(openDAGServer, "openDAG", toDataStorage,
                  treatment, response, highlightedPathList, isTransportability,
-                 dagDownloads, backdoorShow, layout)
+                 dagDownloads, backdoorShow, effectModifierShow, layout)
       callModule(RCodeServer, "RCode", toDataStorage, dagDownloads)
       
       # Handle download buttons
