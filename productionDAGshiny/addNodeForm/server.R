@@ -126,7 +126,6 @@ addNodeServer <- function(id, toDataStorage, treatment, response, highlightedPat
         })
         
         removeModal()
-
        } else {
         output$errorText <- renderUI({
           p("Each node must have a unique name",
