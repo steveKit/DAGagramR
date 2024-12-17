@@ -84,15 +84,20 @@ ui <- page_navbar(
             card(
                full_screen = TRUE,
                fluidRow(
-                  column(1, actionButton("refreshLayout", NULL, icon = icon("refresh"))),
-                  column(6, materialSwitch(
+               div(
+                  style = "width: 90%;",
+                  materialSwitch(
                      inputId = "showBackdoor",
                      label = "Show Open Backdoor Paths",
                      status = "primary",
-                     right = FALSE
+                     right = TRUE
                   ),
                   uiOutput("effectModifierSwitch")
-                  )
+               ),
+               div(
+                  style = "width: 10%;",
+                  actionButton("refreshLayout", NULL, icon = icon("refresh"))
+               )
                ),
                uiOutput("legend"),
                uiOutput("graph")
@@ -165,7 +170,7 @@ server <- function(input, output, session) {
                   inputId = "showEffectModifiers",
                   label = "Show Effect Modifiers",
                   status = "primary",
-                  right = FALSE
+                  right = TRUE
                )
             )
             
