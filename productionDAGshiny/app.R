@@ -133,19 +133,24 @@ ui <- page_navbar(
 server <- function(input, output, session) {
   
   # Show initial modal
-  observe({
-    showModal(modalDialog(
-      title = "Welcome to DAGagramR",
-      p("Please enter the initial settings for your DAG."),
-      textInput("treatmentName", "Treatment Name", ""),
-      textInput("responseName", "Response Name", ""),
-      checkboxInput("transportability", "Enable Transportability?", FALSE),
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("setNames", "Start")
-      )
-    ))
-  })
+   observe({
+      showModal(modalDialog(
+         tags$p("Welcome to DAGagramR", 
+                style = "font-size: 2rem; font-weight: bold; margin-bottom: 20px; text-align: center;"), # Custom title styling
+         p("Please enter the initial settings for your DAG.", 
+           style = "margin-top: 5px; margin-bottom: 5px; text-align: left;"), # Adjust margins and alignment
+         p(tags$small(tags$i(style = "color: grey; font-size: 80%;", 
+                             "Name Rules: up to 14 characters, no spaces and no special characters")), 
+           style = "margin-top: 0;"),
+         textInput("treatmentName", "Treatment Name", ""),
+         textInput("responseName", "Response Name", ""),
+         checkboxInput("transportability", "Enable Transportability?", FALSE),
+         footer = tagList(
+            modalButton("Cancel"),
+            actionButton("setNames", "Start")
+         )
+      ))
+   })
   
   # Handle modal form submission
   observeEvent(input$setNames, {
