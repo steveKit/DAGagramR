@@ -99,15 +99,16 @@ ui <- page_navbar(
                   actionButton("refreshLayout", NULL, icon = icon("refresh"))
                )
                ),
-               uiOutput("legend"),
-               uiOutput("graph")
+               div(
+                  style = "width: 100%; margin-top: 0px;",
+                  uiOutput("graph"))
             )
          )
       )
    ),
    
    # Additional tab
-   nav_panel("User Guide", div(p("Pending"))),
+   # nav_panel("User Guide", div(p("Pending"))),
    
    # Downloads dropdown menu with downloadButton for each item
    nav_menu(
@@ -126,11 +127,13 @@ server <- function(input, output, session) {
       showModal(modalDialog(
          tags$p("Welcome to DAGagramR", 
                 style = "font-size: 2rem; font-weight: bold; margin-bottom: 20px; text-align: center;"), # Custom title styling
-         p("Please enter the initial settings for your DAG.", 
-           style = "margin-top: 5px; margin-bottom: 5px; text-align: left;"), # Adjust margins and alignment
-         p(tags$small(tags$i(style = "color: grey; font-size: 80%;", 
-                             "Name Rules: up to 14 characters, no spaces and no special characters")), 
-           style = "margin-top: 0;"),
+         h5("Please enter the initial settings for your DAG.",
+               # Tooltip beside the Name label
+               tooltip(
+                  bsicons::bs_icon("info-circle-fill", title = "Name Rules"),
+                  "Node names can be up to 14 characters, no spaces, and no special characters."
+               ),
+           style = "margin-top: 5px; margin-bottom: 15px; text-align: left;"),
          textInput("treatmentName", "Treatment Name", ""),
          textInput("responseName", "Response Name", ""),
          checkboxInput("transportability", "Enable Transportability?", FALSE),
