@@ -12,59 +12,61 @@ displayNodesServer <- function(input, output, session, toDataStorage, treatment,
   
   cardList <- reactiveValues(values = c())
   
-  addModal <- function(newNS) { 
-    modalDialog(
-      title = "New Node",
-      fluidPage(
-        div(
-          id = ns(newNS("newNode")),
-          fluidRow(
-            div(
-              class = "label-container",
-              h4(LabelMandatory("Name")),
-              
-              # Built out for hover info
-              div(
-                # class = "tooltip-custom",
-                # circleButton(
-                #   "name_rules",
-                #   "i",
-                #   size = "xs",
-                #   class = "btn-primary"
-                # ),
-                div(
-                  HTML("<i>Name Rules: up to 14 characters, no spaces and no special characters</i>"),
-                  style = "font-size: 14px; color: #767372"
-                )
-              )
+  library(shinyBS)  # For tooltips
+  
+library(bslib)  # For the tooltip function
+library(bsicons)  # For Bootstrap icons
+
+addModal <- function(newNS) { 
+  modalDialog(
+    fluidPage(
+      tags$p("New Node", 
+             style = "font-size: 2rem; font-weight: bold; margin-bottom: 20px; text-align: center;"),
+      div(
+        id = ns(newNS("newNode")),
+        fluidRow(
+          div(
+            class = "label-container",
+            style = "display: flex; align-items: center; gap: 5px;", # Align label and tooltip inline
+            
+            # "Name" Label
+            h5(LabelMandatory("Name"), style = "margin: 0;"),
+            
+            # Tooltip beside the Name label
+            tooltip(
+              bsicons::bs_icon("info-circle-fill", title = "Name Rules"),
+              "Node names can be up to 14 characters, no spaces, and no special characters."
             )
+          )
+        ),
+        textInput(ns(newNS("name")), NULL, ""),
+        uiOutput(ns(newNS("errorMessage"))),
+        radioButtons(ns(newNS("unmeasured")), tags$h5("Type"),
+                     c("Measured" = "measured",
+                       "Unmeasured" = "unmeasured"
+                     )),
+        fluidRow(
+          h5(LabelMandatory("Connections")),
+          column(6,
+                 uiOutput(ns(newNS("checkboxGroupTo")))
           ),
-          textInput(ns(newNS("name")), NULL, ""),
-          uiOutput(ns(newNS("errorMessage"))),
-          radioButtons(ns(newNS("unmeasured")), tags$h4("Type"),
-                       c("Measured" = "measured",
-                         "Unmeasured" = "unmeasured"
-                       )),
-          fluidRow(
-            h4(LabelMandatory("Connections")),
-            column(6,
-                   uiOutput(ns(newNS("checkboxGroupTo")))
-            ),
-            column(6,
-                   uiOutput(ns(newNS("checkboxGroupFrom")))
-            )
-          ),
-          br(), br(),
-          uiOutput(ns(newNS("errorText"))),
-          uiOutput(ns(newNS("errorMessage2")))
-        )
-      ),
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton(ns(newNS("add_node")), "Add Node", class = "btn-primary")
+          column(6,
+                 uiOutput(ns(newNS("checkboxGroupFrom")))
+          )
+        ),
+        br(), br(),
+        uiOutput(ns(newNS("errorText"))),
+        uiOutput(ns(newNS("errorMessage2")))
       )
+    ),
+    footer = tagList(
+      modalButton("Cancel"),
+      actionButton(ns(newNS("add_node")), "Add Node", class = "btn-primary")
     )
-  }
+  )
+}
+
+  
   
   addNodeServer("newNode", toDataStorage,
                 treatment, response, highlightedPathList)
