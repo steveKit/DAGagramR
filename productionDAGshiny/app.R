@@ -45,7 +45,7 @@ ui <- page_navbar(
    theme = appTheme,
    title = div(
       style = "display: flex; align-items: center; justify-content: space-between; width: 100%;",
-      span("DAGagramR v0.1.0"),
+      span("DAGagramR v0.1.1"),
       tags$img(src = "CCSlogo.png", height = "35px", style = "margin-right: 10px; margin-left: 10px;")
    ),
    
@@ -108,7 +108,12 @@ ui <- page_navbar(
    ),
    
    # Additional tab
-   # nav_panel("User Guide", div(p("Pending"))),
+   nav_panel("Version History",
+            div(tags$h1("Version History")),
+            div(
+            tags$ul(
+                  tags$li("Version 0.1.1 - Updated copy & paste functions, added tooltips, and revised layout"),
+                  tags$li("Version 0.1.0 - Initial Alpha release")))),
    
    # Downloads dropdown menu with downloadButton for each item
    nav_menu(
