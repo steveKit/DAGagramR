@@ -41,13 +41,14 @@ source("R/welcomeModalServer.R")
 # Source modules
 source("R/modules/addNode/addNodeServer.R")
 source("R/modules/addNode/addNodeUI.R")
+source("R/modules/displayNodes/displayNodesServer.R")
+source("R/modules/displayNodes/displayNodesUI.R")
 
 # Source utils
 
 ## Existing
 source("R/helpers.R")
-source("displayNodes/ui.R")
-source("displayNodes/server.R")
+
 source("openBackDoorPathsDAG/ui.R")
 source("openBackDoorPathsDAG/server.R")
 source("nameModal/server.R")

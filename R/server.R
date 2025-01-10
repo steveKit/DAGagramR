@@ -78,8 +78,9 @@ server <- function(input, output, session) {
             }
          })
          
-         callModule(displayNodesServer, "displayNodes",
-                    toDataStorage, treatment, response, highlightedPathList)
+         displayNodesServer("displayNodes", toDataStorage, treatment, response, highlightedPathList)
+         
+         ## syntax to be updated
          callModule(openDAGServer, "openDAG", toDataStorage,
                     treatment, response, highlightedPathList, isTransportability,
                     dagDownloads, backdoorShow, effectModifierShow, layout)
