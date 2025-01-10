@@ -1,10 +1,13 @@
 # Core Shiny packages
 library(shiny)
+library(bslib)
 library(shinydashboard)
 library(shinyjs)
 library(shinyWidgets)
-library(shinytest2)
-library(bslib)
+
+# Bootstrap packages
+library(shinyBS)
+library(bsicons)
 
 # Data visualization packages
 library(tidyverse)
@@ -16,6 +19,9 @@ library(DiagrammeR)
 library(DiagrammeRsvg)
 library(rsvg)
 
+# Testing packages
+library(shinytest2)
+
 # Source UI components
 source("R/ui.R")
 source("R/ui/appTheme.R")
@@ -26,19 +32,20 @@ source("R/ui/downloadsUI.R")
 source("R/ui/version_historyUI.R")
 source("R/ui/effectModifierSwitchUI.R")
 source("R/ui/welcomeModalUI.R")
-# source("R/ui/displayNodesUI.R")
-# source("R/ui/addNodeModalUI.R")
+source("R/ui/newNodeModalUI.R")
 
 # Source server components
 source("R/server.R")
 source("R/welcomeModalServer.R")
-source("R/addNodeFormServer.R")
-source("R/ui/addNodeFormUI.R")
-# source("R/displayNodesServer.R")
 
 # Source modules
-source("R/helpers.R")
+source("R/modules/addNode/addNodeServer.R")
+source("R/modules/addNode/addNodeUI.R")
 
+# Source utils
+
+## Existing
+source("R/helpers.R")
 source("displayNodes/ui.R")
 source("displayNodes/server.R")
 source("openBackDoorPathsDAG/ui.R")

@@ -1,37 +1,27 @@
 displayNodesServer <- function(input, output, session, toDataStorage, treatment,
                                response, highlightedPathList) {
    
-   # source("R/addNodeFormServer.R")
-   # source("R/ui/addNodeFormUI.R")
-   # source("renameNodeForm/server.R")
-   # source("renameNodeForm/ui.R")
-   # source("editNodeModal/ui.R")
-   # source("editNodeModal/server.R")
-   
    ns <- session$ns
    observerInitialized <- reactiveVal(FALSE)
    
    cardList <- reactiveValues(values = c())
    
-   library(shinyBS)  # For tooltips
-   library(bslib)  # For the tooltip function
-   library(bsicons)  # For Bootstrap icons
-   
-   addModal <- function(newNS) { 
+   addModal <- function(modalId) {
+      
       modalDialog(
          fluidPage(
-            tags$p("New Node", 
+            tags$p("New Node",
                    style = "font-size: 2rem; font-weight: bold; margin-bottom: 20px; text-align: center;"),
             div(
-               id = ns(newNS("newNode")),
+               id = ns(modalId("newNode")),
                fluidRow(
                   div(
                      class = "label-container",
                      style = "display: flex; align-items: center; gap: 5px;", # Align label and tooltip inline
-                     
+
                      # "Name" Label
                      h5(LabelMandatory("Name"), style = "margin: 0;"),
-                     
+
                      # Tooltip beside the Name label
                      tooltip(
                         bsicons::bs_icon("info-circle-fill", title = "Name Rules"),
@@ -39,34 +29,42 @@ displayNodesServer <- function(input, output, session, toDataStorage, treatment,
                      )
                   )
                ),
-               textInput(ns(newNS("name")), NULL, ""),
-               uiOutput(ns(newNS("errorMessage"))),
-               radioButtons(ns(newNS("unmeasured")), tags$h5("Type"),
+               textInput(ns(modalId("name")), NULL, ""),
+               uiOutput(ns(modalId("errorMessage"))),
+               radioButtons(ns(modalId("unmeasured")), tags$h5("Type"),
                             c("Measured" = "measured",
                               "Unmeasured" = "unmeasured"
                             )),
                fluidRow(
                   h5(LabelMandatory("Connections")),
                   column(6,
-                         uiOutput(ns(newNS("checkboxGroupTo")))
+                         uiOutput(ns(modalId("checkboxGroupTo")))
                   ),
                   column(6,
-                         uiOutput(ns(newNS("checkboxGroupFrom")))
+                         uiOutput(ns(modalId("checkboxGroupFrom")))
                   )
                ),
                br(), br(),
-               uiOutput(ns(newNS("errorText"))),
-               uiOutput(ns(newNS("errorMessage2")))
+               uiOutput(ns(modalId("errorText"))),
+               uiOutput(ns(modalId("errorMessage2")))
             )
          ),
          footer = tagList(
             modalButton("Cancel"),
-            actionButton(ns(newNS("add_node")), "Add Node", class = "btn-primary")
+            actionButton(ns(modalId("add_node")), "Add Node", class = "btn-primary")
          )
       )
    }
    
-   
+   # addModal <- function(ns) {
+   #    modalDialog(
+   #       newNodeModalUI(ns),
+   #       footer = tagList(
+   #          modalButton("Cancel"),
+   #          actionButton(ns("add_node"), "Add Node", class = "btn-primary")
+   #       )
+   #    )
+   # }
    
    addNodeServer("newNode", toDataStorage,
                  treatment, response, highlightedPathList)
