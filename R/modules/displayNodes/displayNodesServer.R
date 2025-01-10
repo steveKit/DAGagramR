@@ -1,6 +1,7 @@
 displayNodesServer <- function(id, toDataStorage, treatment, response, highlightedPathList) {
    moduleServer(id, function(input, output, session) {
-      ns <- NS(id)
+      ns <- session$ns
+      
       observerInitialized <- reactiveVal(FALSE)
       
       cardList <- reactiveValues(values = c())

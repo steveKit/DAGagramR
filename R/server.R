@@ -79,11 +79,10 @@ server <- function(input, output, session) {
          })
          
          displayNodesServer("displayNodes", toDataStorage, treatment, response, highlightedPathList)
-         
+         dagVisualizationServer("openDAG", toDataStorage,
+                       treatment, response, highlightedPathList, isTransportability,
+                       dagDownloads, backdoorShow, effectModifierShow, layout)
          ## syntax to be updated
-         callModule(openDAGServer, "openDAG", toDataStorage,
-                    treatment, response, highlightedPathList, isTransportability,
-                    dagDownloads, backdoorShow, effectModifierShow, layout)
          callModule(RCodeServer, "RCode", toDataStorage, dagDownloads)
          
          # Handle download buttons

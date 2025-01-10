@@ -1,4 +1,4 @@
-openDAGUI <- function(id) {
+dagVisualizationUI <- function(id) {
   ns <- NS(id)
   fluidPage(
     fluidRow(

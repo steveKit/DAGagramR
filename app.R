@@ -43,14 +43,14 @@ source("R/modules/addNode/addNodeServer.R")
 source("R/modules/addNode/addNodeUI.R")
 source("R/modules/displayNodes/displayNodesServer.R")
 source("R/modules/displayNodes/displayNodesUI.R")
+source("R/modules/dagVisualization/dagVisualizationServer.R")
+source("R/modules/dagVisualization/dagVisualizationUI.R")
 
 # Source utils
 
 ## Existing
 source("R/helpers.R")
 
-source("openBackDoorPathsDAG/ui.R")
-source("openBackDoorPathsDAG/server.R")
 source("nameModal/server.R")
 source("RCode/server.R")
 source("renameNodeForm/server.R")
