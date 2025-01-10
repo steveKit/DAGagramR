@@ -47,12 +47,13 @@ source("R/modules/dagVisualization/dagVisualizationServer.R")
 source("R/modules/dagVisualization/dagVisualizationUI.R")
 
 # Source utils
+source("R/utils/generateDAGCode.R")
 
 ## Existing
 source("R/helpers.R")
 
 source("nameModal/server.R")
-source("RCode/server.R")
+# source("RCode/server.R")
 source("renameNodeForm/server.R")
 source("renameNodeForm/ui.R")
 source("editNodeModal/ui.R")

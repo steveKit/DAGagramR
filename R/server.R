@@ -82,8 +82,8 @@ server <- function(input, output, session) {
          dagVisualizationServer("openDAG", toDataStorage,
                        treatment, response, highlightedPathList, isTransportability,
                        dagDownloads, backdoorShow, effectModifierShow, layout)
-         ## syntax to be updated
-         callModule(RCodeServer, "RCode", toDataStorage, dagDownloads)
+         ## need to better understand
+         generateDAGCode(input, output, session, toDataStorage, dagDownloads)
          
          # Handle download buttons
          output$dag <- downloadHandler(
