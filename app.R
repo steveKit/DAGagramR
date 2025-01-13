@@ -37,6 +37,7 @@ source("R/ui/newNodeModalUI.R")
 # Source server components
 source("R/server.R")
 source("R/welcomeModalServer.R")
+source("R/nameModal.R")
 
 # Source modules
 source("R/modules/addNode/addNodeServer.R")
@@ -54,7 +55,7 @@ source("R/utils/generateDAGCode.R")
 ## Existing
 source("R/helpers.R")
 
-source("nameModal/server.R")
+# source("nameModal/server.R")
 source("renameNodeForm/server.R")
 source("renameNodeForm/ui.R")
 
