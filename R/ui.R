@@ -1,5 +1,6 @@
 createUI <- function(theme) {
    page_navbar(
+      useShinyjs(),
       theme = theme,
       header = headerUI(),
       useShinyjs(),

@@ -1,19 +1,19 @@
 server <- function(input, output, session) {
-   
+
    # Initialize modal
    modalValues <- callModule(welcomeModalServer, "welcomeModal")
-   
+
    # Handle modal form submission
    observeEvent(input$setNames, {
       if (CheckNameInput(input$treatmentName)$isValid & CheckNameInput(input$responseName)$isValid) {
          removeModal()
-         
+
          # Set up reactive values for inputs
          treatment <- reactiveVal(input$treatmentName)
          response <- reactiveVal(input$responseName)
          highlightedPathList <- reactiveVal(NULL)
          isTransportability <- reactiveVal(input$transportability)
-         
+
          if (isTransportability()) {
             toDataStorage <- reactiveValues(
                data = data.frame(
@@ -25,12 +25,12 @@ server <- function(input, output, session) {
                   effectModifier = FALSE
                )
             )
-            
+
             # Add the effect modifier switch
             output$effectModifierSwitch <- renderUI({
                effectModifierSwitchUI()
             })
-            
+
          } else {
             toDataStorage <- reactiveValues(
                data = data.frame(
@@ -43,31 +43,31 @@ server <- function(input, output, session) {
                )
             )
          }
-         
+
          dagDownloads <- reactiveValues(
             dag = NULL,
             backdoorDag = NULL,
             legend = NULL,
             RCode = "This is your R code" # Replace this with your actual R code to be copied
          )
-         
+
          effectModifierShow <- reactiveVal(FALSE)
          openDAGUI("openDAG")
          backdoorShow <- reactiveVal(FALSE)
          layout <- reactiveVal("kk")
-         
+
          observe({
             openDAGUI("openDAG")
             backdoorShow(input$showBackdoor)
             if (!is.null(input$showEffectModifiers)){
                effectModifierShow(input$showEffectModifiers)
             }
-            
+
             output$graph <- renderUI({
                openDAGUI("openDAG")
             })
          })
-         
+
          observeEvent(input$refreshLayout, {
             if (layout() == "kk") {
                layout("tree")
@@ -77,14 +77,13 @@ server <- function(input, output, session) {
                layout("kk")
             }
          })
-         
+
          displayNodesServer("displayNodes", toDataStorage, treatment, response, highlightedPathList)
          dagVisualizationServer("openDAG", toDataStorage,
                        treatment, response, highlightedPathList, isTransportability,
                        dagDownloads, backdoorShow, effectModifierShow, layout)
-         ## need to better understand
          generateDAGCode(input, output, session, toDataStorage, dagDownloads)
-         
+
          # Handle download buttons
          output$dag <- downloadHandler(
             filename = function() { paste0("dag", ".png") },
@@ -92,25 +91,26 @@ server <- function(input, output, session) {
                export_graph(dagDownloads$dag, file_name = file, file_type = "png", width = 4000, height = 3000)
             }
          )
-         
+
          output$backdoorDag <- downloadHandler(
             filename = function() { paste0("backdoorDag", ".png") },
             content = function(file) {
                export_graph(dagDownloads$backdoorDag, file_name = file, file_type = "png", width = 4000, height = 3000)
             }
          )
-         
+
          output$legendDownload <- downloadHandler(
             filename = function() { paste0("dagLegend", ".png") },
             content = function(file) {
                export_graph(dagDownloads$legend, file_name = file, file_type = "png", width = 4000, height = 3000)
             }
          )
-         
+
          observeEvent(input$downloadRCode, {
             session$sendCustomMessage("copyToClipboard", dagDownloads$RCode)
+            showNotification("R code copied to clipboard", type = "message")
          })
-         
+
       } else {
          output$nameError <- renderUI({
             p("The names must follow the naming convention",
