@@ -48,16 +48,14 @@ source("R/modules/dagVisualization/dagVisualizationServer.R")
 source("R/modules/dagVisualization/dagVisualizationUI.R")
 source("R/modules/editNodeModal/editNodeModalServer.R")
 source("R/modules/editNodeModal/editNodeModalUI.R")
+source("R/modules/renameNodeForm/renameNodeFormServer.R")
+source("R/modules/renameNodeForm/renameNodeFormUI.R")
 
 # Source utils
 source("R/utils/generateDAGCode.R")
 
-## Existing
+## Source helpers
 source("R/helpers.R")
-
-# source("nameModal/server.R")
-source("renameNodeForm/server.R")
-source("renameNodeForm/ui.R")
 
 ##### TEMP SOURCES ######
 
